@@ -12,9 +12,11 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-       return view('ADMIN.adminHomepage');
+        $products = Product::latest()->get();
+
+       return view('ADMIN.adminHomepage')->with('products', $products);
     }
 
     /**
@@ -36,23 +38,44 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'product_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'productname' => 'required',
+            'productdescription' => 'required',
+            'productcount' => 'required',
+            'productprice' => 'required',
+
         ]);
  
-        if ($files = $request->file('product_image')) {
- 
-            $image = $request->product_image->store('public/images');
+        if ($files = $request->file('image')) {
+
+            $imageName = time().'.'.$request->image->getClientOriginalExtension(); //----> CHANGE IMAGE FILE NAME
+            $request->file('image')->move(public_path('images'), $imageName); //----> MOVE IMAGE TO PUBLI FOLDER
+
+            $products = new Product();
+
+            $products->product_name = $request->productname; //-----------> TO SAVE PRODUCT ITEM AND IMAGE FILE NAME
+            $products->product_image = $imageName;
+            $products->product_code = 0;
+            $products->product_description = $request->productdescription;
+            $products->product_count = $request->productcount;
+            $products->product_price = $request->productprice;
+            $products->save();
+
+            $id = $products->id;      //----------------> TO GENERATE PRODUCT CODE
+            $created = preg_replace("/[\s-:]/", "", $products->created_at);
+            $products->product_code = 'ITEM' . $created . $products->products_image . $id;
+            $products->save();
              
             return Response()->json([
                 "success" => true,
-                "product_image" => $image
+                "image" => $imageName
             ]);
  
         }
  
         return Response()->json([
                 "success" => false,
-                "product_image" => ''
+                "image" => ''
             ]);
  
     }
@@ -65,7 +88,9 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        //
+        $products = Product::find($id);
+
+        return view('ADMIN.adminViewpage')->with('products', $products);
     }
 
     /**
@@ -74,9 +99,11 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $id)
     {
-        //
+        $products = Product::find($request->id);
+
+        return response()->json($products);
     }
 
     /**
@@ -86,9 +113,21 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+         // if ($files = $request->file('image')) {
+
+         //    $imageName = time().'.'.$request->image->getClientOriginalExtension(); //----> CHANGE IMAGE FILE NAME
+         //    $request->file('image')->move(public_path('images'), $imageName); //----> MOVE IMAGE TO PUBLI FOLDER
+
+        $products = Product::find($request->id);       //-------------> EDIT/SAVE TICKET
+
+            $products->product_name = $request->productname;
+            $products->product_description = $request->productdescription;
+            $products->product_count = $request->productcount;
+            $products->product_price = $request->productprice;
+            $products->save();
+        // }
     }
 
     /**

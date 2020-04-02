@@ -54,21 +54,6 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="user_type" class="col-md-4 col-form-label text-md-right">{{ __('User Type') }}</label>
-
-                            <div class="col-md-6">
-                                <select id="name" type="text" class="form-control @error('user_type') is-invalid @enderror" name="user_type" value="{{ old('name') }}" required autocomplete="user_type" autofocus/>
-                                        <option>USER</option>
-                                        <option>ADMIN</option>
-                                @error('user_type')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
                             <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
 
                             <div class="col-md-6">
@@ -76,6 +61,22 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="user_type" class="col-md-4 col-form-label text-md-right">{{ __('User Type') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="user_type" type="user_type" class="form-control @error('user_type') is-invalid @enderror" name="user_type" value="{{ old('user_type') }}" required autocomplete="user_type">
+                                    <option>User</option>
+                                    <option>Admin</option>
+                                </select>
+                                
+                                 @error('user_type')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

@@ -11,23 +11,35 @@
 
     <!-- Scripts -->
     {{-- <script src="{{ asset('js/app.js') }}" defer></script> --}}
-    <script src="js/app.js"></script>
+    {{-- <script src="js/app.js"></script> --}}
 
     <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    {{-- <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> --}}
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-    <link rel="stylesheet" type="text/css" src="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#myTable').DataTable();
+
+        });
+</script>
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('products') }}">
                    Laravel Shopping Cart
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -82,10 +94,48 @@
     </div>
 </body>
 </html>
-
-<script>
-$(document).ready( function () {
-    $('#myTable').DataTable();
-
-});
+<script type="text/javascript">
+     
+    $(document).ready(function (e) {
+  
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+ 
+        $('#image').change(function(){
+          
+            let reader = new FileReader();
+            reader.onload = (e) => { 
+              $('#image_preview_container').attr('src', e.target.result); 
+            }
+            reader.readAsDataURL(this.files[0]); 
+ 
+        });
+ 
+        $('#upload_image_form').submit(function(e) {
+            e.preventDefault();
+ 
+            var formData = new FormData(this);
+ 
+            $.ajax({
+                type:'POST',
+                url: "{{ url('add-products')}}",
+                data: formData,
+                cache:false,
+                contentType: false,
+                processData: false,
+                success: (data) => {
+                    // this.reset();
+                    $('#modal-container-115163').modal('toggle');
+                    window.location.href = 'products';
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            });
+        });
+    });
+    
 </script>
