@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use Session;
+use App\Purchase;
 
 class CartsController extends Controller
 {
@@ -84,9 +85,9 @@ class CartsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy(Request $request)
+    {   
+        
     }
 
     public function addtocart(Request $request)
@@ -95,10 +96,9 @@ class CartsController extends Controller
                 'prodName' => $request->prodName,
                 'prodDesc' => $request->prodDesc,
                 'prodQuantity' => $request->prodQuantity,
-                'prodPrice' => $request->prodPrice,
                 'total' => $request->total
              ];
-
+             
         Session::push('cart', $item);
 
      
@@ -110,4 +110,29 @@ class CartsController extends Controller
         return view('USER.addtocart');
 
     }
+
+    public function checkOut(Request $request) 
+    {
+        $purchase = new Purchase;
+        foreach (Session::get('cart') as $carts){
+
+           $cart = Product::find($carts['id']);
+
+           $stock = $carts['prodQuantity'];
+           $quantity = $cart->product_count - $stock;
+           $cart->product_count = $quantity;
+           if ($cart->product_count < 0){
+                return false;
+           }else{
+           $cart->save();
+           }
+           $purchase->product_name = $carts['prodName'];
+           $purchase->product_description = $carts['prodDesc'];
+           $purchase->product_quantity = $carts['prodQuantity'];
+           $purchase->product_total = $carts['total'];
+           $purchase->save();
+        }
+         $request->session()->forget('cart');
+    }
+    
 }

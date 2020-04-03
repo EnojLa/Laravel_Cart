@@ -6,10 +6,12 @@
 		<div class="col-md-4">
 	</div>
 		<div class="col-md-4">
-			<form role="form">
+			<div class="alert" id="errorlog"></div>
+			<form  id="update-form">
 				<div class="form-group">
 					 
 				<div class="form-group">
+					
 					<label for="productname">
 						Product Name
 					</label>
@@ -53,53 +55,57 @@
 				
 				<div class="modal-footer">
 					<button id="btnEdit" class="btn btn-outline-primary">Edit</button>
-					<button id="btnUpdate" class="btn btn-outline-primary" disabled="true">Update</button>				
+					<button type="submit" class="btnUpdate btn btn-outline-primary" disabled="true">Update</button>
 				</div>
+			</form>
 			
 </div>
 @endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+@section('scripts')
 <script>
 $(document).ready(function(){
+
 	$('#btnEdit').click(function(e){
 		e.preventDefault();
 
 		$('input').prop('disabled', false);
-		$('#btnUpdate').attr('disabled', false);
+		$('.btnUpdate').attr('disabled', false);
 		$('#btnEdit').attr('disabled', true);
 
-});
-	$('#btnUpdate').on('click', function(e){
+	});
+
+	$('#update-form').submit(function(e){
 		e.preventDefault();
-		
-			var id = {{ $products->id }};
-			var productname = $("#productname").val();
-			var productdescription = $("#productdescription").val();
-			var productcount = $("#productcount").val();
-			var productprice = $("#productprice").val();
+		$('#errorlog').html("");
 
-	        $.ajax({
-			   type:'POST',
-				url:"{{ url('update-product')}}",
-				data: {
-						
-					id: id,
-					productname : productname,
-					productdescription : productdescription,
-				    productcount : productcount, 
-				    productprice : productprice
-				    
-				    },
+		var formData = new FormData(this);
+		formData.append("id", {{ $products->id }});
+		$.ajax({
+		   type:'POST',
+			url:"{{ url('update-product')}}",
+			data: formData,
+	        cache:false,
+	        contentType: false,
+	        processData: false,
+	        success: (data) => {
+	        	console.log(data);
+	            // this.reset();
+	            window.location.href = '/products';
+	        },
+	        error:function(error){
+	           	var errors = $.parseJSON(error.responseText);
+	           	console.log(error);
 
-	           success:function(result){
-	           				console.log(result);
-				window.location.href = '/products';
-				// },
-				// error: function(data){
-    //                 console.log(data);
-                }
-			});	
-     });
+	            $.each(errors.errors, function(index, value) {
+	            	$('#errorlog').append(value+'<br>');
+	            	console.log(errors.errors);
+            });
+            
+           }
+	    });	
+	        
+    });
 });
 
 </script>
+@endsection

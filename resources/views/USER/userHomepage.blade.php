@@ -39,12 +39,12 @@
 							<label>Availabe stock: <p id="prodCount"></p></label><br>
 							<label>Product Price: <input id="prodPrice" disabled="true" /></label>
 							<img src="" id="prodImage" style="max-height: 150px; display: block; margin-left: auto; margin-right: auto; width: 50%; ">
-							<label>Quantity: <input type="number" id="prodQuantity" value="1" min="1"></label>
+							<label>Quantity: <input type="number" id="prodQuantity" value="1" min="1" max="10"></label>
 							<p>Total: Php<output id="total"></output></p>
 						</div>
 						<div class="modal-footer">
 							 
-							<button type="button" class="btn btnAddtocart btn-primary">
+							<button type="button" class="btn btnAddtocart btn-primary" data-dismiss="modal">
 								Add to cart
 							</button> 
 							<button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -59,7 +59,8 @@
 			
 		</div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+@endsection
+@section('scripts')
 <script>
 $(document).ready(function(){
 	$('.btnBuy').click(function(e){
@@ -95,13 +96,7 @@ $(document).ready(function(){
 	$("#prodQuantity").keyup(function(){
 	  	comp();
 	});
-	$(document).ready(function (e) {
-  
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-     });
+	
 	$('.btnAddtocart').on('click', function(){
 
 		var id = $('#prodId').val();
@@ -111,34 +106,34 @@ $(document).ready(function(){
 		var prodPrice = $('#prodPrice').val();
 		var total = $('#total').text();
 
-		$.ajax({
 
-			type:'POST',
-			url: "{{ url('add-to-cart')}}",
-			data: {
-					
-					id,
-					prodName,
-					prodDesc,
-					prodQuantity,
-					prodPrice,
-					total
-				},
+			$.ajax({
 
-				success:function(item){
-					alert('Item already added to cart');
-					
-				}
+				type:'POST',
+				url: "{{ url('add-to-cart')}}",
+				data: {
+						
+						id,
+						prodName,
+						prodDesc,
+						prodQuantity,
+						prodPrice,
+						total
+					},
+
+					success:function(item){
+						alert('Item already added to cart');
+
+					}
+
+				});
+
 
 		});
 
-
-	});
-
-	});		
+});		
 	
-});
+
 </script>
 
 @endsection
-

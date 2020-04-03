@@ -41,7 +41,7 @@
 									<label for="productcount">
 										Product Count
 									</label>
-									<input type="number" name="productcount" class="form-control" id="productcount"/>
+									<input type="number" name="productcount" class="form-control" id="productcount" min="1" max="100" />
 								</div>
 
 								<div class="form-group">
@@ -110,7 +110,7 @@
 						<td>{{ $product->product_description }}</td>
 						<td>{{ $product->product_count }}</td>
 						<td>{{ $product->product_price }}</td>
-						<td><a href="view-products/{{ $product->id }}"><button type="button" class="btn btn-outline-secondary btn-sm">View</button><a href="#{{ $product->id }}"><button type="button" class="btn btn-outline-danger btn-sm">Delete</button></td>
+						<td><a href="view-products/{{ $product->id }}"><button type="button" class="btn btn-outline-secondary btn-sm">View</button><button id="{{ $product->id }}" type="button" class="btn btnDel btn-outline-danger btn-sm">Delete</button></td>
 					</tr>
 					@endforeach
 				</tbody>
@@ -118,4 +118,37 @@
 		</div>
 	</div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+$(document).ready(function(){
+	$('.btnDel').click(function(e){
+		e.preventDefault();
+
+		var id = this.id;
+		console.log(id);
+		var del = confirm('Do you want to delete this Item?');
+
+			if(del == true) {
+
+				$.ajax({
+
+					type: 'POST',
+					url: "{{ url('delete') }}",
+					data: {
+						id:id
+					},
+					success:function(del) {
+						location.reload(true);
+					}
+					
+
+				});
+			
+			}
+
+		});
+});
+</script>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\Purchase;
 
 class ProductsController extends Controller
 {
@@ -115,19 +116,28 @@ class ProductsController extends Controller
      */
     public function update(Request $request)
     {
-         // if ($files = $request->file('image')) {
+        request()->validate([
+            'productname' => 'required',
+            'productdescription' => 'required',
+            'productcount' => 'required|numeric|min:1',
+            'productprice' => 'required',
 
-         //    $imageName = time().'.'.$request->image->getClientOriginalExtension(); //----> CHANGE IMAGE FILE NAME
-         //    $request->file('image')->move(public_path('images'), $imageName); //----> MOVE IMAGE TO PUBLI FOLDER
+        ]);
 
-        $products = Product::find($request->id);       //-------------> EDIT/SAVE TICKET
+        $products = Product::find($request->id);  //-------------> EDIT/SAVE PRODUCT
+        
+        if ($request->file('image')) {
+            $imageName = time().'.'.$request->image->getClientOriginalExtension(); //----> CHANGE IMAGE FILE NAME
+            $request->file('image')->move(public_path('images'), $imageName); //----> MOVE IMAGE TO PUBLI FOLDER
+            $products->product_image = $imageName;
+        }
 
-            $products->product_name = $request->productname;
-            $products->product_description = $request->productdescription;
-            $products->product_count = $request->productcount;
-            $products->product_price = $request->productprice;
-            $products->save();
-        // }
+        $products->product_name = $request->productname;
+        $products->product_description = $request->productdescription;
+        $products->product_count = $request->productcount;
+        $products->product_price = $request->productprice;
+        $products->save();
+
     }
 
     /**
@@ -136,8 +146,10 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $products = Product::find($request->id);
+        $products->delete();
+
     }
 }
