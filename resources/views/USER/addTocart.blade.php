@@ -89,5 +89,4 @@ $('.btnDel').click(function(e){
 });
 
 </script>
-
 @endsection

@@ -96,54 +96,54 @@
 </html>
 <script type="text/javascript">
      
-    $(document).ready(function (e) {
-  
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
- 
-        $('#image').change(function(){
-          
-            let reader = new FileReader();
-            reader.onload = (e) => { 
-              $('#image_preview_container').attr('src', e.target.result); 
-            }
-            reader.readAsDataURL(this.files[0]); 
- 
-        });
- 
-        $('#upload_image_form').submit(function(e) {
-            e.preventDefault();
-            $('#errorlog').html("");
- 
-            var formData = new FormData(this);
- 
-            $.ajax({
-                type:'POST',
-                url: "{{ url('add-products')}}",
-                data: formData,
-                cache:false,
-                contentType: false,
-                processData: false,
-                success: (data) => {
-                    $('#modal-container-115163').modal('toggle');
-                    window.location.href = 'products';
-                },
-                error:function(error){
-                    var errors = $.parseJSON(error.responseText);
-                    console.log(error);
+$(document).ready(function (e) {
 
-                    $.each(errors.errors, function(index, value) {
-                        $('#errorlog').append(value+'<br>');
-                        console.log(errors.errors);
-                });
-                
-               }
-            }); 
-        });
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
     });
+
+    $('#image').change(function(){
+      
+        let reader = new FileReader();
+        reader.onload = (e) => { 
+          $('#image_preview_container').attr('src', e.target.result); 
+        }
+        reader.readAsDataURL(this.files[0]); 
+
+    });
+
+    $('#upload_image_form').submit(function(e) {
+        e.preventDefault();
+        $('#errorlog').html("");
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            type:'POST',
+            url: "{{ url('add-products')}}",
+            data: formData,
+            cache:false,
+            contentType: false,
+            processData: false,
+            success: (data) => {
+                $('#modal-container-115163').modal('toggle');
+                window.location.href = 'products';
+            },
+            error:function(error){
+                var errors = $.parseJSON(error.responseText);
+                console.log(error);
+
+                $.each(errors.errors, function(index, value) {
+                    $('#errorlog').append(value+'<br>');
+                    console.log(errors.errors);
+            });
+            
+           }
+        }); 
+    });
+});
     
 </script>
 @yield('scripts')
