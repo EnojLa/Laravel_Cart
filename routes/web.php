@@ -46,5 +46,6 @@ Route::group(['middleware' => ['auth', 'user']], function(){
 	Route::get('view-cart', 'CartsController@showCart');
 	Route::post('checkout', 'CartsController@checkOut');
 	Route::post('remove', 'CartsController@destroy');
+	Route::get('view-purchase', 'CartsController@purchase');
 
 });

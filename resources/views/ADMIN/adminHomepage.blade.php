@@ -18,6 +18,7 @@
 							<h5 class="modal-title" id="myModalLabel">
 								New Product
 							</h5> 
+							<div class="alert" id="errorlog"></div>
 						</div>
 
 						<div class="modal-body">
@@ -127,7 +128,6 @@ $(document).ready(function(){
 		e.preventDefault();
 
 		var id = this.id;
-		console.log(id);
 		var del = confirm('Do you want to delete this Item?');
 
 			if(del == true) {
@@ -143,7 +143,6 @@ $(document).ready(function(){
 						location.reload(true);
 					}
 					
-
 				});
 			
 			}

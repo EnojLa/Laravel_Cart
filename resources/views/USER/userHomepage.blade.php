@@ -39,7 +39,7 @@
 							<label>Availabe stock: <p id="prodCount"></p></label><br>
 							<label>Product Price: <input id="prodPrice" disabled="true" /></label>
 							<img src="" id="prodImage" style="max-height: 150px; display: block; margin-left: auto; margin-right: auto; width: 50%; ">
-							<label>Quantity: <input type="number" id="prodQuantity" value="1" min="1" max="10"></label>
+							<label>Quantity: <input type="number" id="prodQuantity" value="1" min="1" max="100"></label>
 							<p>Total: Php<output id="total"></output></p>
 						</div>
 						<div class="modal-footer">
@@ -102,10 +102,17 @@ $(document).ready(function(){
 		var id = $('#prodId').val();
 		var prodName = $('#prodName').text();
 		var prodDesc = $('#prodDesc').text();
+		var prodCount = $('#prodCount').text();
 		var prodQuantity = $('#prodQuantity').val();
 		var prodPrice = $('#prodPrice').val();
 		var total = $('#total').text();
 
+		if (prodQuantity <= 0) {
+				alert('Please input atleast 1 quantity!!!');
+		}else if
+			(prodCount == 0) {
+				alert('Out of stocks! Please choose another item');
+		}else{	
 
 			$.ajax({
 
@@ -123,13 +130,13 @@ $(document).ready(function(){
 
 					success:function(item){
 						alert('Item already added to cart');
+						location.reload(true);
 
 					}
 
-				});
-
-
-		});
+			});
+		}
+	});
 
 });		
 	

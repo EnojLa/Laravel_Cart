@@ -116,6 +116,7 @@
  
         $('#upload_image_form').submit(function(e) {
             e.preventDefault();
+            $('#errorlog').html("");
  
             var formData = new FormData(this);
  
@@ -127,14 +128,20 @@
                 contentType: false,
                 processData: false,
                 success: (data) => {
-                    // this.reset();
                     $('#modal-container-115163').modal('toggle');
                     window.location.href = 'products';
                 },
-                error: function(data){
-                    console.log(data);
-                }
-            });
+                error:function(error){
+                    var errors = $.parseJSON(error.responseText);
+                    console.log(error);
+
+                    $.each(errors.errors, function(index, value) {
+                        $('#errorlog').append(value+'<br>');
+                        console.log(errors.errors);
+                });
+                
+               }
+            }); 
         });
     });
     

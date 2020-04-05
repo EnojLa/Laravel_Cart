@@ -3,17 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Product;
 use Session;
 use App\Purchase;
+use App\User;
 
 class CartsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $products = Product::all();
@@ -21,33 +18,6 @@ class CartsController extends Controller
        return view('USER.userHomepage')->with('products', $products);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Request $request)
     {
        
@@ -56,42 +26,19 @@ class CartsController extends Controller
         return response()->json($products);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {   
-        
+        $item = $this->removeElementWithValue(Session::get('cart'), "id", $request->id);
+
+        $request->session()->forget('cart');
+        Session::put('cart', $item);
+
+        return 'Success';
     }
 
     public function addtocart(Request $request)
     {
+  
         $item = ['id' => $request->id,
                 'prodName' => $request->prodName,
                 'prodDesc' => $request->prodDesc,
@@ -100,39 +47,58 @@ class CartsController extends Controller
              ];
              
         Session::push('cart', $item);
-
-     
+  
     } 
 
-    public function showCart() {
-
-
+    public function showCart() 
+    {
         return view('USER.addtocart');
-
     }
 
     public function checkOut(Request $request) 
     {
-        $purchase = new Purchase;
         foreach (Session::get('cart') as $carts){
 
            $cart = Product::find($carts['id']);
 
            $stock = $carts['prodQuantity'];
            $quantity = $cart->product_count - $stock;
-           $cart->product_count = $quantity;
-           if ($cart->product_count < 0){
-                return false;
+           $cart->product_count = $quantity; 
+           if ($cart->product_count < 0) {
+             return false;
            }else{
            $cart->save();
-           }
+
+           $purchase = new Purchase();
+           
            $purchase->product_name = $carts['prodName'];
+           $purchase->product_id = Auth::user()->id;
            $purchase->product_description = $carts['prodDesc'];
            $purchase->product_quantity = $carts['prodQuantity'];
            $purchase->product_total = $carts['total'];
            $purchase->save();
+           }
+           $request->session()->forget('cart');
         }
-         $request->session()->forget('cart');
+         
+    }
+
+    public function removeElementWithValue($array, $key, $value){
+         foreach($array as $subKey => $subArray){
+              if($subArray[$key] == $value){
+                   unset($array[$subKey]);
+              }
+         }
+         return $array;
+    }
+
+    public function purchase()
+    {
+      $user = Auth::user()->id;
+
+      $purchase = Purchase::where('product_id', $user)->latest()->get();
+
+      return view('USER.purchase')->with('purchase', $purchase);
     }
     
 }

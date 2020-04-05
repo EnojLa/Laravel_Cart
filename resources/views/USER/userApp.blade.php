@@ -27,6 +27,7 @@
                     {{-- {{ config('app.name', 'Laravel') }} --}}
                     Laravel Shopping Cart
                     <a href="view-cart" class="breadcrumb-item">My Cart</a>
+                    <a href="view-purchase" class="breadcrumb-item">Purchased Item</a>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

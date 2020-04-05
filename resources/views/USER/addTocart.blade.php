@@ -65,21 +65,27 @@ $('.btnCheckout').click(function(e){
 	    }
 	});
 });
-$('.btnDel').click(function(){
+$('.btnDel').click(function(e){
+	e.preventDefault();
 
-	var id = this.id;
-	
-	$.ajax({
-	    type: 'POST',
-	    url: 'remove',
-	    data: {
-	    	id
-	    },
-	    success: function(success) {
-	        console.log(success);
-	    }
-	});
+	let id = this.id;
+	var del = confirm('Do you want to delete this Item?');
 
+		if(del == true) {
+		
+			$.ajax({
+			    type: 'POST',
+			    url: 'remove',
+			    data: {
+			    	id
+			    },
+			    success: function(success) {
+			        console.log(success);
+			        location.reload(true);
+			    }
+			});
+
+		}
 });
 
 </script>
