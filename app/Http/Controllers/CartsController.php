@@ -11,14 +11,14 @@ use App\User;
 
 class CartsController extends Controller
 {
-    public function index()
+    public function index() //--------------> USER HOME PAGE
     {
         $products = Product::all();
 
        return view('USER.userHomepage')->with('products', $products);
     }
 
-    public function show(Request $request)
+    public function show(Request $request) //---------------> SHOW SPECIFIC ITEM ID
     {
        
         $products = Product::find($request->id);
@@ -26,7 +26,7 @@ class CartsController extends Controller
         return response()->json($products);
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request) //----------->DELETE SPECIFIC ID (SESSION)
     {   
         $item = $this->removeElementWithValue(Session::get('cart'), "id", $request->id);
 
@@ -36,7 +36,7 @@ class CartsController extends Controller
         return 'Success';
     }
 
-    public function addtocart(Request $request)
+    public function addtocart(Request $request) //-----------> ADD TO CART
     {
 
         $item = ['id' => $request->id,
@@ -46,7 +46,7 @@ class CartsController extends Controller
                 'total' => $request->total
              ];
 
-        $items = Session::get('cart');
+        $items = Session::get('cart'); //---------> CHECKING IF THERE IS EXISTING ITEM
         if ($items == null){
           
           Session::push('cart', $item);
@@ -65,18 +65,18 @@ class CartsController extends Controller
         }
     } 
 
-    public function showCart() 
+    public function showCart() //-----------> SHOW ADDED ITEM
     {
         return view('USER.addtocart');
     }
 
-    public function checkOut(Request $request) 
+    public function checkOut(Request $request)
     {
         foreach (Session::get('cart') as $carts){
 
            $cart = Product::find($carts['id']);
 
-           $stock = $carts['prodQuantity'];
+           $stock = $carts['prodQuantity']; //--------------->UPDATE CURRENT STOCK
            $quantity = $cart->product_count - $stock;
            $cart->product_count = $quantity; 
            if ($cart->product_count < 0) {
@@ -93,12 +93,12 @@ class CartsController extends Controller
            $purchase->product_total = $carts['total'];
            $purchase->save();
            }
-           $request->session()->forget('cart');
+           $request->session()->forget('cart'); //--------->AFTER CHECKOUT ALL ADD TO CART WILL BE DELETED AND SAVE TO DATABASE
         }
          
     }
 
-    public function removeElementWithValue($array, $key, $value){
+    public function removeElementWithValue($array, $key, $value){ //---------> CONNECTED WITH FUNCTION DESTROY
          foreach($array as $subKey => $subArray){
               if($subArray[$key] == $value){
                    unset($array[$subKey]);
@@ -107,7 +107,7 @@ class CartsController extends Controller
          return $array;
     }
 
-    public function purchase()
+    public function purchase() //------------>VIEW PURHCASE ITEM
     {
       $user = Auth::user()->id;
 
