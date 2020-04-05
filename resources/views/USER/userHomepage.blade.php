@@ -129,7 +129,7 @@ $(document).ready(function(){
 					},
 
 					success:function(item){
-						alert('Item already added to cart');
+						alert('Item added to cart');
 						location.reload(true);
 
 					}

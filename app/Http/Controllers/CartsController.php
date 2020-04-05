@@ -38,16 +38,31 @@ class CartsController extends Controller
 
     public function addtocart(Request $request)
     {
-  
+
         $item = ['id' => $request->id,
                 'prodName' => $request->prodName,
                 'prodDesc' => $request->prodDesc,
                 'prodQuantity' => $request->prodQuantity,
                 'total' => $request->total
              ];
-             
-        Session::push('cart', $item);
-  
+
+        $items = Session::get('cart');
+        if ($items == null){
+          
+          Session::push('cart', $item);
+        }else{
+          foreach ($items as $key => $value) {
+            if ($items[$key]['id'] == $request->id ){
+                $items[$key]['prodQuantity'] = $request->prodQuantity + $items[$key]['prodQuantity'];
+                $items[$key]['total'] = $request->total + $items[$key]['total'];
+                $request->session()->forget('cart');
+                Session::put('cart', $items);
+            }else{
+              Session::push('cart', $item);
+            }
+            
+          }
+        }
     } 
 
     public function showCart() 
