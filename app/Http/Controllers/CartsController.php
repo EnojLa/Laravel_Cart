@@ -67,7 +67,7 @@ class CartsController extends Controller
 
     public function showCart() //-----------> SHOW ADDED ITEM
     {
-        return view('USER.addtocart');
+        return view('USER.addTocart');
     }
 
     public function checkOut(Request $request)
