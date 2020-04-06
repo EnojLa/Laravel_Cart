@@ -114,7 +114,7 @@ $(document).ready(function(){
 				alert('Out of stocks! Please choose another item');
 		}else if 
 			(prodQuantity > prodCount) {
-				alert(prodCount + ' is avalibale stocks');
+				alert(prodCount + ' only avalibale stocks');
 		}else{	
 
 			$.ajax({
