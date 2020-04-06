@@ -102,7 +102,7 @@ $(document).ready(function(){
 		var id = $('#prodId').val();
 		var prodName = $('#prodName').text();
 		var prodDesc = $('#prodDesc').text();
-		var prodCount = $('#prodCount').text();
+		var prodCount = parseInt($('#prodCount').text());
 		var prodQuantity = $('#prodQuantity').val();
 		var prodPrice = $('#prodPrice').val();
 		var total = $('#total').text();
@@ -114,7 +114,7 @@ $(document).ready(function(){
 				alert('Out of stocks! Please choose another item');
 		}else if 
 			(prodQuantity > prodCount) {
-			alert(prodCount + ' is avalibale stocks')
+				alert(prodCount + ' is avalibale stocks');
 		}else{	
 
 			$.ajax({
